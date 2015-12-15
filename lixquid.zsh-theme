@@ -7,8 +7,41 @@
 # TODO: Add CPU / RAM load
 # TODO: Add History number + commands
 
-# TODO: Refactor left/right to build commands
 # TODO: Add color customization
+
+## Customization ###############################################################
+
+## Configures when to display in fallback mode. Possible values are:
+# "on": Powerline style is always used
+# "ssh-off": Fallback is used if $SSH_CLIENT is not null
+# "off": Fallback style is always used
+_PROMPT_DISPLAY_STRATEGY='ssh-off'
+
+## Prompt Build Commands
+# You can customize what segments appear where by adding/moving/removing
+# _PROMPT_* commands between _PR_RET and _PROMPT_END_*.
+# Note that $1 will be "2" if we're currently building Prompt2 (zshell is
+# expecting more input).
+_PROMPT_BUILD_LEFT() {
+	_PR_RET=$?
+
+	_PROMPT_RETURNCODE LEFT
+	_PROMPT_SUPERUSER LEFT
+	_PROMPT_JOBS LEFT
+	_PROMPT_USER LEFT
+	_PROMPT_FULLDIR LEFT
+	_PROMPT_GIT_BRANCH LEFT
+
+	_PROMPT_END_LEFT $1
+}
+_PROMPT_BUILD_RIGHT() {
+	_PR_RET=$?
+
+	[[ -n $1 ]] && _PROMPT_PROMPT2 RIGHT
+	_PROMPT_GIT_ACTION RIGHT
+
+	_PROMPT_END_RIGHT
+}
 
 ## Variables ###################################################################
 
@@ -254,30 +287,29 @@ PROMPT_FALLBACK() {
 	RPS2=""
 }
 
+## PROMPT FLALBACK OFF
+# This will set the Prompt to display as default.
+PROMPT_FALLBACK_OFF() {
+	PS1='$(_PROMPT_BUILD_LEFT) '
+	PS2='$(_PROMPT_BUILD_LEFT 2)'
+	RPS1='$(_PROMPT_BUILD_RIGHT)'
+	RPS2='$(_PROMPT_BUILD_RIGHT 2)'
+}
+
 ## Customizable ################################################################
 
-_PROMPT_BUILD_LEFT() {
-	_PR_RET=$?
-
-	_PROMPT_RETURNCODE LEFT
-	_PROMPT_SUPERUSER LEFT
-	_PROMPT_JOBS LEFT
-	_PROMPT_USER LEFT
-	_PROMPT_FULLDIR LEFT
-	_PROMPT_GIT_BRANCH LEFT
-
-	_PROMPT_END_LEFT $1
-}
-_PROMPT_BUILD_RIGHT() {
-	_PR_RET=$?
-
-	[[ -n $1 ]] && _PROMPT_PROMPT2 RIGHT
-	_PROMPT_GIT_ACTION RIGHT
-
-	_PROMPT_END_RIGHT
-}
-
-PS1='$(_PROMPT_BUILD_LEFT) '
-PS2='$(_PROMPT_BUILD_LEFT 2)'
-RPS1='$(_PROMPT_BUILD_RIGHT)'
-RPS2='$(_PROMPT_BUILD_RIGHT 2)'
+case "$_PROMPT_DISPLAY_STRATEGY" in
+	(on)
+		PROMPT_FALLBACK_OFF
+		;;
+	(ssh-off)
+		if [[ -n $SSH_CLIENT ]]; then
+			PROMPT_FALLBACK
+		else
+			PROMPT_FALLBACK_OFF
+		fi
+		;;
+	(off)
+		PROMPT_FALLBACK
+		;;
+esac
