@@ -47,6 +47,7 @@ _PROMPT_BUILD_RIGHT() {
 
 _PR_BG=''
 _PR_RET='0'
+_PR_LOCATION="$0:A"
 
 _PR_SYMBOL_LEFT='\ue0b0'
 _PR_SYMBOL_RIGHT='\ue0b2'
@@ -287,7 +288,7 @@ PROMPT_FALLBACK() {
 	RPS2=""
 }
 
-## PROMPT FLALBACK OFF
+## PROMPT_FALLBACK_OFF
 # This will set the Prompt to display as default.
 PROMPT_FALLBACK_OFF() {
 	PS1='$(_PROMPT_BUILD_LEFT) '
@@ -296,7 +297,13 @@ PROMPT_FALLBACK_OFF() {
 	RPS2='$(_PROMPT_BUILD_RIGHT 2)'
 }
 
-## Customizable ################################################################
+## PROMPT RELOAD
+# Reloads the Theme
+PROMPT_RELOAD() {
+	source "$_PR_LOCATION"
+}
+
+## Startup #####################################################################
 
 case "$_PROMPT_DISPLAY_STRATEGY" in
 	(on)
