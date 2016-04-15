@@ -15,7 +15,13 @@
 # "on": Powerline style is always used
 # "ssh-off": Fallback is used if $SSH_CLIENT is not null
 # "off": Fallback style is always used
-_PROMPT_DISPLAY_STRATEGY='ssh-off'
+_PROMPT_DISPLAY_STRATEGY=${_PROMPT_DISPLAY_STRATEGY:-ssh-off}
+
+## If enabled, powerline style arrows will be used as section terminators,
+# and powerline symbols will be used. Possible values are:
+# "on": Powerline font is enabled
+# "off": Powerline font is disabled
+_PROMPT_DISPLAY_FONT=${_PROMPT_DISPLAY_FONT:-on}
 
 ## Prompt Build Commands
 # You can customize what segments appear where by adding/moving/removing
@@ -49,18 +55,33 @@ _PR_BG=''
 _PR_RET='0'
 _PR_LOCATION="$0:A"
 
-_PR_SYMBOL_LEFT='\ue0b0'
-_PR_SYMBOL_RIGHT='\ue0b2'
-_PR_SYMBOL_CHECKMARK='\u2718'
-_PR_SYMBOL_BOLT='\u26a1'
-_PR_SYMBOL_COG='\u2699'
-_PR_SYMBOL_BRANCH='\ue0a0'
-_PR_SYMBOL_DETACHED='\u27a6'
-_PR_SYMBOL_AHEAD='\u2b06'
-_PR_SYMBOL_BEHIND='\u2b07'
-_PR_SYMBOL_ST_UNTRACKED='\u2b29'
-_PR_SYMBOL_ST_UNSTAGED='\u2b21'
-_PR_SYMBOL_ST_STAGED='\u2b22'
+if [[ $_PROMPT_DISPLAY_FONT = on ]]; then
+	_PR_SYMBOL_LEFT='\ue0b0'
+	_PR_SYMBOL_RIGHT='\ue0b2'
+	_PR_SYMBOL_CHECKMARK='\u2718'
+	_PR_SYMBOL_BOLT='\u26a1'
+	_PR_SYMBOL_COG='\u2699'
+	_PR_SYMBOL_BRANCH='\ue0a0'
+	_PR_SYMBOL_DETACHED='\u27a6'
+	_PR_SYMBOL_AHEAD='\u2b06'
+	_PR_SYMBOL_BEHIND='\u2b07'
+	_PR_SYMBOL_ST_UNTRACKED='\u2b29'
+	_PR_SYMBOL_ST_UNSTAGED='\u2b21'
+	_PR_SYMBOL_ST_STAGED='\u2b22'
+else
+	_PR_SYMBOL_LEFT=''
+	_PR_SYMBOL_RIGHT=''
+	_PR_SYMBOL_CHECKMARK='X'
+	_PR_SYMBOL_BOLT='SU'
+	_PR_SYMBOL_COG='BG'
+	_PR_SYMBOL_BRANCH='BR:'
+	_PR_SYMBOL_DETACHED='CO:'
+	_PR_SYMBOL_AHEAD='^'
+	_PR_SYMBOL_BEHIND='V'
+	_PR_SYMBOL_ST_UNTRACKED='?'
+	_PR_SYMBOL_ST_UNSTAGED='!'
+	_PR_SYMBOL_ST_STAGED='+'
+fi
 
 ## Util ########################################################################
 
